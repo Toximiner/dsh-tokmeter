@@ -37,12 +37,18 @@ window.__ModuleLoader__.load({
 
     const LIGHTNING = 'M13 2 3 14h9l-1 8 10-12h-9l1-8z';
 
+    /** Upper bound for one interval: real decode is far below this; a jump above it means the UI pre-filled blocks. */
+    const MAX_RATE = 400;
+
     /**
      * Live decode speed pill. `useChat` (injected per session by ui-chat)
      * re-renders this component on every stream delta; the effect below
      * turns the growing stream text into a smoothed tokens/second rate
-     * (characters / 4 ≈ tokens). The reading lingers ~2.5 s after the
-     * stream stops, then the pill hides.
+     * (characters / 4 ≈ tokens). The sample resets on every turn/step
+     * boundary, the instantaneous rate is clamped (a new step can start
+     * with pre-filled blocks), and the reading lingers ~2.5 s after text
+     * growth stops (stream end or a thinking/tool phase), then the pill
+     * hides.
      */
     const TokmeterPill = React.memo(function TokmeterPill({ useChat }) {
       const partial = useChat ? useChat((s) => s.legacy.partial) : null;
@@ -63,28 +69,49 @@ window.__ModuleLoader__.load({
           hideTimer.current = null;
         }
         const now = Date.now();
-        const st = sample.current ?? (sample.current = { chars: 0, time: now, ema: 0 });
+        const st = sample.current;
         if (partial === null) {
-          if (now - st.time > 2500) {
+          if (st === null || now - st.time > 2500) {
             setRate(null);
             sample.current = null;
+          } else if (hideTimer.current === null) {
+            hideTimer.current = setTimeout(() => {
+              setRate(null);
+              sample.current = null;
+              hideTimer.current = null;
+            }, 2500 - (now - st.time));
           }
+          return;
+        }
+        // New turn/step, or a block sequence that shrank (replay after a
+        // gap): reset the baseline so the pre-filled volume is never
+        // counted as generated tokens.
+        if (st === null || st.turn !== partial.turn || st.step !== partial.step || blockChars(partial) < st.chars) {
+          sample.current = { turn: partial.turn, step: partial.step, chars: blockChars(partial), time: now, ema: 0 };
           return;
         }
         const chars = blockChars(partial);
         const dt = (now - st.time) / 1000;
+        let inst = 0;
         if (dt >= 0.05) {
-          const inst = chars > st.chars ? (chars - st.chars) / 4 / dt : 0;
+          if (chars > st.chars) {
+            inst = (chars - st.chars) / 4 / dt;
+            if (inst > MAX_RATE) inst = MAX_RATE;
+          }
           st.ema = st.ema === 0 ? inst : st.ema * 0.7 + inst * 0.3;
           setRate(st.ema);
         }
         st.chars = chars;
         st.time = now;
-        hideTimer.current = setTimeout(() => {
-          setRate(null);
-          sample.current = null;
-          hideTimer.current = null;
-        }, 2500);
+        // Arm the hide-once timer only after growth stops (or at the last
+        // snapshot), and never re-arm while the stream keeps growing.
+        if (inst === 0 && hideTimer.current === null) {
+          hideTimer.current = setTimeout(() => {
+            setRate(null);
+            sample.current = null;
+            hideTimer.current = null;
+          }, 2500);
+        }
       }, [partial]);
 
       if (rate === null || rate < 0.5) return null;
