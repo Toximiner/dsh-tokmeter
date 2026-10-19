@@ -5,8 +5,8 @@ window.__ModuleLoader__.load({
     const h = React.createElement;
 
     const CSS =
-      ".dsh-tokmeter-pill{box-sizing:border-box;border-radius:var(--dsw-radius-sm);max-width:100%;color:var(--dsw-alias-label-tertiary);font:inherit;font-variant-numeric:tabular-nums;white-space:nowrap;background:0 0;align-items:center;gap:6px;padding:1px 8px;display:inline-flex;font-size:calc(var(--dsh-content-font-size-secondary,13px) - 1px);line-height:calc(20px + var(--dsh-content-font-delta-secondary,0px))}" +
-      ".dsh-tokmeter-pill svg{flex:none;width:14px;height:14px}";
+      ".dsh-tokmeter-pill{box-sizing:border-box;border-radius:var(--dsw-radius-sm);max-width:100%;color:var(--dsw-alias-label-secondary);font:inherit;font-variant-numeric:tabular-nums;white-space:nowrap;background:0 0;align-items:center;gap:6px;padding:1px 8px;display:inline-flex;font-size:calc(var(--dsh-content-font-size-secondary,13px) - 1px);line-height:calc(20px + var(--dsh-content-font-delta-secondary,0px))}" +
+      ".dsh-tokmeter-pill svg{flex:none;width:14px;height:14px;color:#e8b339}";
 
     function installStyle() {
       if (typeof document === 'undefined') return;
