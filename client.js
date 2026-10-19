@@ -35,7 +35,7 @@ window.__ModuleLoader__.load({
       return chars;
     }
 
-    const LIGHTNING = 'M8.3125 0.980183C8.66767 1.0531 8.97902 1.20418 9.2627 1.43233C9.48724 1.61297 9.73029 1.85793 9.97949 2.10714L14.707 6.83468L13.293 8.24874L9 3.95577V15.0417H7V3.95577L2.70703 8.24874L1.29297 6.83468L6.02051 2.10714C6.26971 1.85793 6.51277 1.61297 6.7373 1.43233C6.97662 1.23986 7.28445 1.04402 7.6875 0.980183C7.8973 0.947006 8.1031 0.95516 8.3125 0.980183Z';
+    const LIGHTNING = 'M13 2 3 14h9l-1 8 10-12h-9l1-8z';
 
     /**
      * Live decode speed pill. `useChat` (injected per session by ui-chat)
@@ -89,7 +89,7 @@ window.__ModuleLoader__.load({
 
       if (rate === null || rate < 0.5) return null;
       return h('span', { className: 'dsh-tokmeter-pill', title: 'Live decode speed (estimated from stream text growth)' },
-        h('svg', { viewBox: '0 0 16 16', width: '14', height: '14', 'aria-hidden': 'true', fill: 'currentColor' },
+        h('svg', { viewBox: '0 0 24 24', width: '14', height: '14', 'aria-hidden': 'true', fill: 'currentColor' },
           h('path', { d: LIGHTNING })),
         h('span', { children: rate.toFixed(1) + ' tok/s' }));
     });
