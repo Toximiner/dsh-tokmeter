@@ -1,0 +1,30 @@
+{
+  "name": "dsh-tokmeter",
+  "version": "1.0.0",
+  "description": "Live model decode speed (tok/s) pill in the DSH Web UI composer status bar.",
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "deepseek",
+    "plugin",
+    "tok/s",
+    "decode-speed",
+    "chat-ui"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./icon": "./icon.svg"
+  },
+  "files": ["index.js", "client.js", "cordis.patch.yml", "icon.svg"],
+  "dsh": {
+    "bundle": { "patch": "./cordis.patch.yml" },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": ["@deepseek-ai/dsh-client-ui-conversation", "@deepseek-ai/dsh-client-ui-chat"]
+    }
+  }
+}
