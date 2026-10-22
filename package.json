@@ -1,7 +1,15 @@
 {
   "name": "dsh-tokmeter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Live model decode speed (tok/s) pill in the DSH Web UI composer status bar.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Toximiner/dsh-tokmeter.git"
+  },
+  "homepage": "https://github.com/Toximiner/dsh-tokmeter#readme",
+  "bugs": {
+    "url": "https://github.com/Toximiner/dsh-tokmeter/issues"
+  },
   "keywords": [
     "dsh",
     "deepseek-harness",
